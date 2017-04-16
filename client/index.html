@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Home</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <h1>List of Memo</h1>
+    <button onclick="changeDisplay()">Add new memo</button><br><br>
+
+    <form id="addMemo">
+      <h3>Add New Memo</h3>
+      <label for="title">Title</label><br>
+      <input type="text" name="title" value=""><br>
+      <label for="content">Content</label><br>
+      <input type="text" name="content" value=""><br><br>
+      <button type="button" id="submitMemo">Submit</button>
+      <a href="#" onclick="back()">Back</a>
+    </form>
+
+    <form id="editMemo">
+      <h3>Edit Memo</h3>
+      <label for="title">Title</label><br>
+      <input type="text" name="title" value="" id="titleEdit"><br>
+      <label for="content">Content</label><br>
+      <input type="text" name="content" value="" id="contentEdit"><br><br>
+      <input type="hidden" name="id" value="" id="idMemo" >
+      <button type="button" id="submitEdit" >Submit</button>
+      <a href="#" onclick="back()">Back</a>
+    </form>
+
+
+
+
+
+    <table border="1" id="allData">
+      <thead>
+        <tr>
+          <td></td>
+          <td>Title</td>
+          <td>Content</td>
+          <td>Edit</td>
+          <td>Delete</td>
+        </tr>
+      </thead>
+      <tbody  id="memos" >
+      </tbody>
+    </table>
+  </body>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(() => {
+      $('#addMemo').hide()
+      $('#editMemo').hide()
+      $.ajax({
+        method: "GET",
+        url: "http://localhost:3000/memo",
+        success: (data) => {
+          // console.log("Success", data);
+          data.forEach((memo) => {
+            $('#memos').append(
+              '<tr>',
+                '<td>'+memo.id+'</td>',
+                '<td id="title">'+memo.title+'</td>',
+                '<td>'+memo.content+'</td>',
+                `<td onclick="update(${memo.id})"> <a href="#">Edit</a></td>`,
+                `<td onclick="deleteMemo(${memo.id})"> <a href="#">Delete</a> </td>`,
+              '</tr>')
+          })
+        },
+        fail: () => {
+          console.log('error');
+        }
+      })
+    })
+
+    function changeDisplay() {
+      $('#addMemo').show()
+      $('#allData').hide()
+    }
+
+    function back() {
+      $('#addMemo').hide()
+      $('#allData').show()
+      $('#editMemo').hide()
+    }
+
+    function update(id){
+      $('#editMemo').show()
+      $('#allData').hide()
+      $.ajax({
+        url: "http://localhost:3000/memo/update/"+id,
+        method: "GET",
+        success: function(data){
+          $("#titleEdit").val(data.title)
+          $("#contentEdit").val(data.content)
+          $("#idMemo").val(data.id)
+        }
+      })
+    }
+
+    $('#submitEdit').click(function(){
+      let title_edit = $("#titleEdit").val()
+      let content_edit = $("#contentEdit").val()
+      let memo_id = $("#idMemo").val()
+      console.log(title_edit, content_edit, memo_id);
+      $.ajax({
+        method: "POST",
+        url: "http://localhost:3000/memo/"+memo_id,
+        data: {title: title_edit, content: content_edit, id: memo_id},
+        success: function(data){
+         window.location.reload()
+        },
+        fail: function(){
+         console.log('error');
+        }
+      })
+    })
+
+    $('#submitMemo').click(function(){
+      let data = $("#addMemo").serialize().split("&");
+      let dataTitle = data[0].split('=')
+      let dataContent = data[1].split('=')
+      let title = decodeURIComponent(dataTitle[1])
+      let content = decodeURIComponent(dataContent[1])
+      $.ajax({
+        method: "POST",
+        url: "http://localhost:3000/memo",
+        dataType: 'json',
+        data: {title: title, content: content},
+        success: (data) => {
+          window.location.reload()
+        },
+        fail: () => {
+          console.log('error');
+        }
+      })
+    })
+
+    function deleteMemo(id) {
+      $.ajax({
+        method: "DELETE",
+        url: "http://localhost:3000/memo/"+id,
+        success: (data) => {
+          window.location.reload()
+        },
+        fail: () => {
+          console.log('error');
+        }
+      })
+    }
+  </script>
+
+
+</html>

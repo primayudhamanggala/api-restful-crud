@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Create Memo</title>
+  </head>
+  <body>
+    <h1>New Memo</h1>
+    <form action="/memo/create" method="post">
+      <label for="title">Title</label><br>
+      <input type="text" name="title" value=""><br>
+      <label for="content">Content</label><br>
+      <textarea name="content" rows="8" cols="80"></textarea><br>
+      <button type="submit" name="button">Submit</button>
+      <a href="/memo">Back</a>
+    </form>
+  </body>
+</html>

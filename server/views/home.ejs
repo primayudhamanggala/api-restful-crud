@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Home</title>
+  </head>
+  <body>
+    <h1>List of Memo</h1>
+    <a href="/memo/create">Add new memo</a>
+    <table border="1">
+      <thead>
+        <tr>
+          <td></td>
+          <td>Title</td>
+          <td>Content</td>
+          <td></td>
+          <td></td>
+        </tr>
+      </thead>
+      <tbody>
+        <% memos.forEach((memo) => {%>
+        <tr>
+          <td></td>
+          <td><%= memo.title %></td>
+          <td><%= memo.content %></td>
+          <td><a href="/memo/update/<%= memo.id %>">Edit</a></td>
+          <td><a href="/memo/delete/<%= memo.id %>" onclick="return confirm('Are you sure?')">Delete</a></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </body>
+</html>
